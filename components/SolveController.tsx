@@ -44,7 +44,7 @@ export function SolveController({
                 <FastForward size={16} className="mr-1"/> 结果
             </Button>
             <select
-            className="text-sm border border-slate-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-1 w-20"
+            className="text-sm border border-slate-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 p-1 w-22"
             value={playSpeed}
             onChange={(e) => onSpeedChange(Number(e.target.value))}
             >

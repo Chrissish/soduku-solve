@@ -5,14 +5,16 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { SudokuBoard } from '@/components/SudokuBoard';
 import { Button } from '@/components/common/Button';
 import { stringToBoard, boardToString } from '@/lib/utils';
-import { SudokuBoard as BoardType } from '@/types';
+import { SudokuBoard as BoardType, AlgorithmType } from '@/types';
 import { ArrowRight, RotateCcw, Home } from 'lucide-react';
 import { isValidSudoku } from '@/lib/sudokuValidator';
+import { AlgorithmSelector } from '@/components/AlgorithmSelector';
 
 function CorrectionContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [board, setBoard] = useState<BoardType>(Array(9).fill(null).map(() => Array(9).fill(0)));
+  const [algorithm, setAlgorithm] = useState<AlgorithmType>('mrv');
 
   useEffect(() => {
     const boardStr = searchParams.get('board');
@@ -35,7 +37,7 @@ function CorrectionContent() {
       }
     }
     const boardStr = boardToString(board);
-    router.push(`/solve?board=${boardStr}`);
+    router.push(`/solve?board=${boardStr}&algo=${algorithm}`);
   };
 
   const handleReset = () => {
@@ -61,6 +63,9 @@ function CorrectionContent() {
         <Button variant="ghost" size="sm" className="absolute left-0 top-1" onClick={() => router.push('/')}>
             <Home className="mr-2 h-4 w-4" /> 首页
         </Button>
+        <div className="absolute right-0 top-1">
+            <AlgorithmSelector value={algorithm} onChange={setAlgorithm} />
+        </div>
         <h1 className="text-xl font-bold text-slate-900">确认题目</h1>
         <p className="text-sm text-slate-600">请校对识别结果，点击格子可修改</p>
       </div>

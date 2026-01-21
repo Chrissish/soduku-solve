@@ -3,7 +3,7 @@ import { SudokuBoard, SolveSettings } from '@/types';
 export const EMPTY_BOARD: SudokuBoard = Array(9).fill(null).map(() => Array(9).fill(0));
 
 export const DEFAULT_SETTINGS: SolveSettings = {
-  playSpeed: 500,
+  playSpeed: 100,
   autoPlay: false,
 };
 

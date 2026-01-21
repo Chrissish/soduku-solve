@@ -19,3 +19,9 @@ export type SolveSettings = {
   playSpeed: number;
   autoPlay: boolean;
 };
+
+export type AlgorithmType = 'backtracking' | 'mrv' | 'dlx';
+
+export interface SolverStrategy {
+  solve(board: SudokuBoard): SolveStep[];
+}

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { SudokuBoard, SolveStep } from '@/types';
+import { SudokuBoard, SolveStep, AlgorithmType } from '@/types';
 import { solveSudoku } from '@/lib/sudokuSolver';
 
 export function useSudokuSolver() {
@@ -7,15 +7,15 @@ export function useSudokuSolver() {
   const [steps, setSteps] = useState<SolveStep[]>([]);
   const [solvedBoard, setSolvedBoard] = useState<SudokuBoard | null>(null);
 
-  const solve = useCallback((board: SudokuBoard) => {
+  const solve = useCallback((board: SudokuBoard, algo: AlgorithmType = 'backtracking') => {
     setIsSolving(true);
     // Use setTimeout to allow UI to update before heavy computation
     setTimeout(() => {
       try {
         const start = performance.now();
-        const resultSteps = solveSudoku(board);
+        const resultSteps = solveSudoku(board, algo);
         const end = performance.now();
-        console.log(`Solved in ${end - start}ms, ${resultSteps.length} steps`);
+        console.log(`Solved with ${algo} in ${end - start}ms, ${resultSteps.length} steps`);
         
         setSteps(resultSteps);
         if (resultSteps.length > 0) {

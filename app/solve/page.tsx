@@ -8,9 +8,10 @@ import { Button } from '@/components/common/Button';
 import { useSudokuSolver } from '@/hooks/useSudokuSolver';
 import { useStepPlayer } from '@/hooks/useStepPlayer';
 import { stringToBoard } from '@/lib/utils';
-import { SudokuBoard as BoardType } from '@/types';
+import { SudokuBoard as BoardType, AlgorithmType } from '@/types';
 import { Home, Loader2 } from 'lucide-react';
 import { DEFAULT_SETTINGS } from '@/lib/constants';
+import { AlgorithmSelector } from '@/components/AlgorithmSelector';
 
 function SolveContent() {
   const router = useRouter();
@@ -18,6 +19,7 @@ function SolveContent() {
   const [initialBoard, setInitialBoard] = useState<BoardType>(Array(9).fill(null).map(() => Array(9).fill(0)));
   const [speed, setSpeed] = useState(DEFAULT_SETTINGS.playSpeed);
   const [showAllSteps, setShowAllSteps] = useState(false);
+  const [algorithm, setAlgorithm] = useState<AlgorithmType>('backtracking');
   
   const { isSolving, steps, solve } = useSudokuSolver();
   
@@ -38,15 +40,28 @@ function SolveContent() {
 
   useEffect(() => {
     const boardStr = searchParams.get('board');
+    const algoParam = searchParams.get('algo') as AlgorithmType;
+    if (algoParam) {
+        setAlgorithm(algoParam);
+    }
+
     if (boardStr) {
       const board = stringToBoard(boardStr);
       // Use setTimeout to avoid synchronous state update warning
       setTimeout(() => {
         setInitialBoard(board);
-        solve(board);
+        solve(board, algoParam || 'backtracking');
       }, 0);
     }
   }, [searchParams, solve]);
+
+  const handleAlgoChange = (newAlgo: AlgorithmType) => {
+      setAlgorithm(newAlgo);
+      // Re-solve with new algorithm
+      solve(initialBoard, newAlgo);
+      jumpToStart();
+      setPlayState('idle');
+  }
 
   const displayBoard = currentBoard || initialBoard;
   const highlightedCell = currentMove ? { row: currentMove.row, col: currentMove.col } : undefined;
@@ -57,6 +72,9 @@ function SolveContent() {
          <Button variant="ghost" size="sm" className="absolute left-0 top-1" onClick={() => router.push('/')}>
             <Home className="mr-2 h-4 w-4" /> 首页
          </Button>
+         <div className="absolute right-0 top-1">
+             <AlgorithmSelector value={algorithm} onChange={handleAlgoChange} />
+         </div>
         <h1 className="text-xl font-bold text-slate-900">解题演示</h1>
         <p className="text-sm text-slate-600">
            {isSolving ? '正在计算解题步骤...' : `共 ${steps.length} 步`}
