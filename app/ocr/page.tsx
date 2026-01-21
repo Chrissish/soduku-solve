@@ -28,9 +28,10 @@ export default function OCRTestPage() {
     addLog("Starting OCR...");
 
     try {
+      const basePath = process.env.NODE_ENV === 'production' ? '/soduku-solve' : '';
       const worker = await createWorker("eng", 1, {
-        workerPath: '/tesseract-worker.min.js',
-        corePath: '/tesseract-core.wasm.js',
+        workerPath: `${basePath}/tesseract-worker.min.js`,
+        corePath: `${basePath}/tesseract-core.wasm.js`,
       });
       
       addLog("Worker created. Setting parameters...");

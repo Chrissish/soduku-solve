@@ -25,10 +25,11 @@ export async function recognizeSudoku(imageFile: File | string): Promise<OCRResu
   }
 
   // 3. Initialize Tesseract Worker
+  const basePath = process.env.NODE_ENV === 'production' ? '/soduku-solve' : '';
   const worker = await createWorker('eng', 1, {
     // Use local files to avoid CORS/Network issues on LAN
-    workerPath: '/tesseract-worker.min.js',
-    corePath: '/tesseract-core.wasm.js',
+    workerPath: `${basePath}/tesseract-worker.min.js`,
+    corePath: `${basePath}/tesseract-core.wasm.js`,
     // langPath usually works from remote, but can be local if needed.
     // For now keep remote langPath (or default) as it's less likely to fail than scripts.
     // If lang load fails, we'll download eng.traineddata to public/ as well.
